@@ -30,3 +30,15 @@
 *.exe
 *.out
 *.app
+
+# Xcode specific
+*.xcconfig
+*.xcodeproj
+
+# macOS specific
+*.plist
+.DS_Store
+
+# openframework auto-generated
+*.make
+Makefile
