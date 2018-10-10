@@ -15,6 +15,36 @@ void CalibrationPattern::resizePattern(float window_width, float window_height) 
     getPatternPositions(window_width, window_height);
 }
 
+void CalibrationPattern::writeDefaultSettings() {
+    this->_pattern_settings->addTag("calibration");
+    this->_pattern_settings->pushTag("calibration");
+
+    this->_pattern_settings->addTag("target");
+    this->_pattern_settings->pushTag("target");
+    this->_pattern_settings->addValue("radius", 12.0f);
+    this->_pattern_settings->addTag("color");
+    this->_pattern_settings->pushTag("color");
+    this->_pattern_settings->addValue("red", 128);
+    this->_pattern_settings->addValue("green", 0);
+    this->_pattern_settings->addValue("blue", 128);
+    this->_pattern_settings->popTag();
+    this->_pattern_settings->popTag();
+
+    this->_pattern_settings->addTag("order");
+    this->_pattern_settings->pushTag("order");
+    this->_pattern_settings->addValue("size", 13);
+    for (int i = 0; i < 13; i++) {
+        this->_pattern_settings->addTag("item");
+        this->_pattern_settings->pushTag("item", i);
+        this->_pattern_settings->addValue("n",  i);
+        this->_pattern_settings->popTag();
+    }
+    this->_pattern_settings->popTag();
+
+    this->_pattern_settings->popTag();
+    this->_pattern_settings->saveFile(this->_pattern_settings_filename);
+}
+
 void CalibrationPattern::getPatternPositions(float pattern_width, float pattern_height) {
     float w = pattern_width;
     float h = pattern_height;

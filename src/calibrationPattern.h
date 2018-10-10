@@ -10,17 +10,21 @@
 
 #include "ofMain.h"
 #include "ofx_blinky.h"
+#include "ofxXmlSettings.h"
 
 class CalibrationPattern {
 public:
     CalibrationPattern();
     void resizePattern(float window_width, float window_height);
 private:
+    const string _pattern_settings_filename = "calibrationSettings.xml";
+    ofxXmlSettings *_pattern_settings;
     int _number_of_targets;
     vector<ofVec2f> _target_positions;
     vector<ofVec2f> _target_correction;
 
     void getPatternPositions(float pattern_width, float pattern_height);
+    void writeDefaultSettings();
 };
 
 #endif /* calibrationPattern_h */
