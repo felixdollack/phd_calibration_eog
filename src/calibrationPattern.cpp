@@ -36,6 +36,8 @@ void CalibrationPattern::loadSettings() {
     this->_marker_color = ofColor(r, g, b);
     this->_pattern_settings->popTag();
 
+    this->_pattern_settings->popTag();
+
     this->_pattern_settings->pushTag("order");
     int positions_in_pattern = this->_pattern_settings->getValue("size", 0);
     for (int i = 0; i < positions_in_pattern; i++) {
