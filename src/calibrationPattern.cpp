@@ -30,6 +30,12 @@ void CalibrationPattern::resizePattern(float window_width, float window_height) 
     getPatternPositions(window_width, window_height);
 }
 
+void CalibrationPattern::draw() {
+    for (int i=0; i < this->_number_of_targets; i++) {
+        this->_calibration_targets[i].draw();
+    }
+}
+
 void CalibrationPattern::loadSettings() {
     this->_pattern_settings->pushTag("calibration");
     {

@@ -16,6 +16,7 @@ class CalibrationPattern {
 public:
     CalibrationPattern();
     void resizePattern(float window_width, float window_height);
+    void draw();
 private:
     const string _pattern_settings_filename = "calibrationSettings.xml";
     ofxXmlSettings *_pattern_settings;
