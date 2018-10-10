@@ -11,6 +11,7 @@
 #include "ofMain.h"
 #include "ofx_blinky.h"
 #include "ofxXmlSettings.h"
+#include "ofx_udp_trigger.h"
 
 enum CalibrationStates {
     OFF,
@@ -45,6 +46,9 @@ private:
     void writeDefaultSettings();
     void nextTarget();
     void backToReference();
+
+    UdpTrigger *_trigger;
+    string _host_address;
 };
 
 #endif /* calibrationPattern_h */

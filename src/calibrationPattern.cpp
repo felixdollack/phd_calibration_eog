@@ -26,6 +26,8 @@ CalibrationPattern::CalibrationPattern() {
     this->_current_target = -1;
     this->_current_target_start_time = 0;
     this->_state = OFF;
+
+    this->_trigger = new UdpTrigger(this->_host_address);
 }
 
 void CalibrationPattern::resizePattern(float window_width, float window_height) {
@@ -71,6 +73,7 @@ void CalibrationPattern::update() {
             for (int i=0; i < this->_calibration_targets.size(); i++) {
                 this->_calibration_targets[i].setBlinking(false);
             }
+            this->_trigger->stopRecording();
         }
     }
 
@@ -83,20 +86,24 @@ void CalibrationPattern::nextTarget() {
     this->_state = TARGET;
     this->_current_target++;
     this->_current_target_start_time = ofGetElapsedTimef();
+    this->_trigger->sendTrigger(ofToString(this->_current_target));
 }
 
 void CalibrationPattern::backToReference() {
     this->_state = REFERENCE;
     this->_current_target_start_time = ofGetElapsedTimef();
+    this->_trigger->sendTrigger(ofToString(this->_reference_target));
 }
 
 void CalibrationPattern::startCalibration() {
     this->_state = TARGET;
+    this->_trigger->startRecording();
 }
 
 void CalibrationPattern::stopCalibration() {
     this->_state = OFF;
     this->_current_target = -1;
+    this->_trigger->stopRecording();
 }
 
 bool CalibrationPattern::isRunning() {
@@ -106,6 +113,7 @@ bool CalibrationPattern::isRunning() {
 void CalibrationPattern::loadSettings() {
     this->_pattern_settings->pushTag("calibration");
     {
+        this->_host_address = this->_pattern_settings->getValue("host", "192.168.1.1");
         this->_pattern_settings->pushTag("target");
         {
             this->_time_per_target = this->_pattern_settings->getValue("duration", 1.0f);
@@ -144,6 +152,7 @@ void CalibrationPattern::writeDefaultSettings() {
     this->_pattern_settings->addTag("calibration");
     this->_pattern_settings->pushTag("calibration");
     {
+        this->_pattern_settings->addValue("host", "192.168.1.1");
         this->_pattern_settings->addTag("target");
         this->_pattern_settings->pushTag("target");
         {
