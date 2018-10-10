@@ -40,6 +40,40 @@ void CalibrationPattern::draw() {
 }
 
 void CalibrationPattern::update() {
+    if (this->_state != OFF) {
+        // start pattern
+        if (this->_current_target < 0) {
+            this->_current_target_start_time = ofGetElapsedTimef();
+            nextTarget();
+            this->_calibration_targets[this->_current_target].setBlinking(true);
+        }
+
+        // stop pattern after last target
+        if (this->_current_target >= this->_number_of_targets) {
+            this->_current_target = -1;
+            this->_state = OFF;
+        }
+
+        // stop blinking the curret target and shift to the next
+        if ((ofGetElapsedTimef() - this->_current_target_start_time) > this->_time_per_target) {
+            if (this->_state == REFERENCE) {
+                this->_calibration_targets[this->_reference_target].setBlinking(false);
+                nextTarget();
+                this->_calibration_targets[this->_current_target].setBlinking(true);
+            } else {
+                this->_calibration_targets[this->_current_target].setBlinking(false);
+                backToReference();
+                this->_calibration_targets[this->_reference_target].setBlinking(true);
+            }
+        }
+    } else {
+        if (this->_current_target_start_time > 0) {
+            for (int i=0; i < this->_calibration_targets.size(); i++) {
+                this->_calibration_targets[i].setBlinking(false);
+            }
+        }
+    }
+
     for (int i=0; i<this->_calibration_targets.size(); i++) {
         this->_calibration_targets[i].update();
     }
