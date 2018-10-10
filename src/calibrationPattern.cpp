@@ -51,6 +51,11 @@ void CalibrationPattern::nextTarget() {
     this->_current_target_start_time = ofGetElapsedTimef();
 }
 
+void CalibrationPattern::backToReference() {
+    this->_state = REFERENCE;
+    this->_current_target_start_time = ofGetElapsedTimef();
+}
+
 bool CalibrationPattern::isRunning() {
     return this->_state != OFF;
 }

@@ -42,6 +42,7 @@ private:
     void loadSettings();
     void writeDefaultSettings();
     void nextTarget();
+    void backToReference();
 };
 
 #endif /* calibrationPattern_h */
