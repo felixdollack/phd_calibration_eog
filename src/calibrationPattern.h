@@ -36,6 +36,7 @@ private:
     vector<Blinky> _calibration_targets;
 
     void getPatternPositions(float pattern_width, float pattern_height);
+    void updatePatternPositions();
     void loadSettings();
     void writeDefaultSettings();
 };

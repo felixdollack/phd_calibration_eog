@@ -20,8 +20,8 @@ CalibrationPattern::CalibrationPattern() {
     getPatternPositions(ofGetWindowWidth(), ofGetWindowHeight());
     for (int i=0; i < this->_number_of_targets; i++) {
         this->_calibration_targets.push_back(*new Blinky(this->_marker_radius, this->_marker_color));
-        this->_calibration_targets[i].setPosition((this->_target_correction[this->_target_order[i]] * this->_marker_radius) + this->_target_positions[this->_target_order[i]] + this->_marker_radius/2);
     }
+    updatePatternPositions();
 
     this->_current_target = -1;
     this->_state = OFF;
@@ -29,6 +29,7 @@ CalibrationPattern::CalibrationPattern() {
 
 void CalibrationPattern::resizePattern(float window_width, float window_height) {
     getPatternPositions(window_width, window_height);
+    updatePatternPositions();
 }
 
 void CalibrationPattern::draw() {
@@ -112,9 +113,18 @@ void CalibrationPattern::writeDefaultSettings() {
     this->_pattern_settings->saveFile(this->_pattern_settings_filename);
 }
 
+void CalibrationPattern::updatePatternPositions() {
+    for (int i=0; i < this->_number_of_targets; i++) {
+        this->_calibration_targets[i].setPosition((this->_target_correction[this->_target_order[i]] * this->_marker_radius) + this->_target_positions[this->_target_order[i]] + this->_marker_radius/2);
+    }
+}
+
 void CalibrationPattern::getPatternPositions(float pattern_width, float pattern_height) {
     float w = pattern_width;
     float h = pattern_height;
+    // clear in case we call this not for the first time
+    this->_target_positions.clear();
+    this->_target_correction.clear();
     /*
      * 1    2    3
      *    9   10
