@@ -11,6 +11,10 @@ CalibrationPattern::CalibrationPattern() {
     getPatternPositions(ofGetWindowWidth(), ofGetWindowHeight());
 }
 
+void CalibrationPattern::resizePattern(float window_width, float window_height) {
+    getPatternPositions(window_width, window_height);
+}
+
 void CalibrationPattern::getPatternPositions(float pattern_width, float pattern_height) {
     float w = pattern_width;
     float h = pattern_height;

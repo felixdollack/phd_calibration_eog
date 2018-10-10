@@ -14,6 +14,7 @@
 class CalibrationPattern {
 public:
     CalibrationPattern();
+    void resizePattern(float window_width, float window_height);
 private:
     int _number_of_targets;
     vector<ofVec2f> _target_positions;
