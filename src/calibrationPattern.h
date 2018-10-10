@@ -20,10 +20,14 @@ private:
     const string _pattern_settings_filename = "calibrationSettings.xml";
     ofxXmlSettings *_pattern_settings;
     int _number_of_targets;
+    float _marker_radius;
+    ofColor _marker_color;
     vector<ofVec2f> _target_positions;
     vector<ofVec2f> _target_correction;
+    vector<int> _target_order;
 
     void getPatternPositions(float pattern_width, float pattern_height);
+    void loadSettings();
     void writeDefaultSettings();
 };
 
