@@ -45,6 +45,7 @@ void CalibrationPattern::loadSettings() {
 
         this->_pattern_settings->pushTag("order");
         {
+            this->_reference_target = this->_pattern_settings->getValue("reference", 0);
             int positions_in_pattern = this->_pattern_settings->getValue("size", 0);
             for (int i = 0; i < positions_in_pattern; i++) {
                 this->_pattern_settings->pushTag("item", i);
@@ -81,6 +82,7 @@ void CalibrationPattern::writeDefaultSettings() {
         this->_pattern_settings->addTag("order");
         this->_pattern_settings->pushTag("order");
         {
+            this->_pattern_settings->addValue("reference", 0);
             this->_pattern_settings->addValue("size", 13);
             for (int i = 0; i < 13; i++) {
                 this->_pattern_settings->addTag("item");

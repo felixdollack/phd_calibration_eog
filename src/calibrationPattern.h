@@ -19,7 +19,7 @@ public:
 private:
     const string _pattern_settings_filename = "calibrationSettings.xml";
     ofxXmlSettings *_pattern_settings;
-    int _number_of_targets;
+    int _number_of_targets, _reference_target;
     float _marker_radius;
     ofColor _marker_color;
     vector<ofVec2f> _target_positions;
