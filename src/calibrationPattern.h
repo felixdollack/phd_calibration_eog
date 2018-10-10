@@ -19,12 +19,13 @@ public:
 private:
     const string _pattern_settings_filename = "calibrationSettings.xml";
     ofxXmlSettings *_pattern_settings;
-    int _number_of_targets, _reference_target;
+    int _number_of_targets, _reference_target, _current_target;
     float _marker_radius;
     ofColor _marker_color;
     vector<ofVec2f> _target_positions;
     vector<ofVec2f> _target_correction;
     vector<int> _target_order;
+    vector<Blinky> _calibration_targets;
 
     void getPatternPositions(float pattern_width, float pattern_height);
     void loadSettings();

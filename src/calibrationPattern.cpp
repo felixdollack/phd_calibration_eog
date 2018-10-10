@@ -18,6 +18,12 @@ CalibrationPattern::CalibrationPattern() {
     loadSettings();
 
     getPatternPositions(ofGetWindowWidth(), ofGetWindowHeight());
+    for (int i=0; i < this->_number_of_targets; i++) {
+        this->_calibration_targets.push_back(*new Blinky(this->_marker_radius, this->_marker_color));
+        this->_calibration_targets[i].setPosition((this->_target_correction[this->_target_order[i]] * this->_marker_radius) + this->_target_positions[this->_target_order[i]] + this->_marker_radius/2);
+    }
+
+    this->_current_target = -1;
 }
 
 void CalibrationPattern::resizePattern(float window_width, float window_height) {
