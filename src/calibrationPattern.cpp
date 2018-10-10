@@ -24,6 +24,7 @@ CalibrationPattern::CalibrationPattern() {
     }
 
     this->_current_target = -1;
+    this->_state = OFF;
 }
 
 void CalibrationPattern::resizePattern(float window_width, float window_height) {

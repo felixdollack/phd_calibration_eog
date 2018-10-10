@@ -12,12 +12,19 @@
 #include "ofx_blinky.h"
 #include "ofxXmlSettings.h"
 
+enum CalibrationStates {
+    OFF,
+    TARGET,
+    REFERENCE
+};
+
 class CalibrationPattern {
 public:
     CalibrationPattern();
     void resizePattern(float window_width, float window_height);
     void draw();
 private:
+    CalibrationStates _state;
     const string _pattern_settings_filename = "calibrationSettings.xml";
     ofxXmlSettings *_pattern_settings;
     int _number_of_targets, _reference_target, _current_target;
