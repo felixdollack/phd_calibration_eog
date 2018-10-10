@@ -41,6 +41,7 @@ private:
     void updatePatternPositions();
     void loadSettings();
     void writeDefaultSettings();
+    void nextTarget();
 };
 
 #endif /* calibrationPattern_h */
