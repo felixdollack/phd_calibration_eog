@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
+#include "calibrationPattern.h"
 
 class ofApp : public ofBaseApp{
 
@@ -14,4 +15,5 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void gotMessage(ofMessage msg);
 		
+		CalibrationPattern *pattern;
 };
