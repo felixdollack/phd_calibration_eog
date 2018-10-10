@@ -23,6 +23,7 @@ public:
     CalibrationPattern();
     void resizePattern(float window_width, float window_height);
     void draw();
+    void update();
 private:
     CalibrationStates _state;
     const string _pattern_settings_filename = "calibrationSettings.xml";

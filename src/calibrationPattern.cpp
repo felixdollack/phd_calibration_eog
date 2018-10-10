@@ -38,6 +38,12 @@ void CalibrationPattern::draw() {
     }
 }
 
+void CalibrationPattern::update() {
+    for (int i=0; i<this->_calibration_targets.size(); i++) {
+        this->_calibration_targets[i].update();
+    }
+}
+
 void CalibrationPattern::loadSettings() {
     this->_pattern_settings->pushTag("calibration");
     {
