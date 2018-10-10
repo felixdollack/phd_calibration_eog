@@ -25,6 +25,7 @@ public:
     void draw();
     void update();
     bool isRunning();
+    void startCalibration();
 private:
     CalibrationStates _state;
     const string _pattern_settings_filename = "calibrationSettings.xml";
