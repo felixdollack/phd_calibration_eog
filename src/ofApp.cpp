@@ -7,7 +7,7 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-
+    pattern->update();
 }
 
 //--------------------------------------------------------------
@@ -17,7 +17,13 @@ void ofApp::draw(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-
+    if (key == 32) { // spacebar
+        if (pattern->isRunning() == false) {
+            pattern->startCalibration();
+        } else {
+            pattern->stopCalibration();
+        }
+    }
 }
 
 //--------------------------------------------------------------
