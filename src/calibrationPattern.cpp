@@ -45,6 +45,10 @@ void CalibrationPattern::update() {
     }
 }
 
+bool CalibrationPattern::isRunning() {
+    return this->_state != OFF;
+}
+
 void CalibrationPattern::loadSettings() {
     this->_pattern_settings->pushTag("calibration");
     {
