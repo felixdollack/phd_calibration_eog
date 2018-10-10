@@ -13,6 +13,7 @@ CalibrationPattern::CalibrationPattern() {
     this->_pattern_settings->loadFile(this->_pattern_settings_filename);
     if (this->_pattern_settings->bDocLoaded == false) {
         writeDefaultSettings();
+        this->_pattern_settings->loadFile(this->_pattern_settings_filename);
     }
     loadSettings();
 
