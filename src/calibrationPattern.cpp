@@ -8,6 +8,14 @@
 #include "calibrationPattern.h"
 
 CalibrationPattern::CalibrationPattern() {
+    // write default settings (if necessary) and load settings
+    this->_pattern_settings = new ofxXmlSettings();
+    this->_pattern_settings->loadFile(this->_pattern_settings_filename);
+    if (this->_pattern_settings->bDocLoaded == false) {
+        writeDefaultSettings();
+    }
+    loadSettings();
+
     getPatternPositions(ofGetWindowWidth(), ofGetWindowHeight());
 }
 
