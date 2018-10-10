@@ -29,7 +29,7 @@ private:
     const string _pattern_settings_filename = "calibrationSettings.xml";
     ofxXmlSettings *_pattern_settings;
     int _number_of_targets, _reference_target, _current_target;
-    float _marker_radius;
+    float _marker_radius, _current_target_start_time, _time_per_target;
     ofColor _marker_color;
     vector<ofVec2f> _target_positions;
     vector<ofVec2f> _target_correction;
