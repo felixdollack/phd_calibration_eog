@@ -60,6 +60,11 @@ void CalibrationPattern::startCalibration() {
     this->_state = TARGET;
 }
 
+void CalibrationPattern::stopCalibration() {
+    this->_state = OFF;
+    this->_current_target = -1;
+}
+
 bool CalibrationPattern::isRunning() {
     return this->_state != OFF;
 }

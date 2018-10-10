@@ -26,6 +26,7 @@ public:
     void update();
     bool isRunning();
     void startCalibration();
+    void stopCalibration();
 private:
     CalibrationStates _state;
     const string _pattern_settings_filename = "calibrationSettings.xml";
