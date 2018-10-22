@@ -19,9 +19,11 @@ void ofApp::draw(){
 void ofApp::keyPressed(int key){
     if (key == 32) { // spacebar
         if (pattern->isRunning() == false) {
+            ofHideCursor();
             pattern->startCalibration();
         } else {
             pattern->stopCalibration();
+            ofShowCursor();
         }
     }
 }
