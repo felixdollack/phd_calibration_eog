@@ -123,10 +123,18 @@ void CalibrationPattern::loadSettings() {
             float r,g,b;
             this->_pattern_settings->pushTag("color");
             {
+                this->_pattern_settings->pushTag("foreground");
                 r = this->_pattern_settings->getValue("red",   0);
                 g = this->_pattern_settings->getValue("green", 0);
                 b = this->_pattern_settings->getValue("blue",  0);
                 this->_marker_color = ofColor(r, g, b);
+                this->_pattern_settings->popTag();
+                this->_pattern_settings->pushTag("background");
+                r = this->_pattern_settings->getValue("red",   0);
+                g = this->_pattern_settings->getValue("green", 0);
+                b = this->_pattern_settings->getValue("blue",  0);
+                this->_marker_background_color = ofColor(r, g, b);
+                this->_pattern_settings->popTag();
             }
             this->_pattern_settings->popTag();
         }
@@ -162,9 +170,22 @@ void CalibrationPattern::writeDefaultSettings() {
             this->_pattern_settings->addTag("color");
             this->_pattern_settings->pushTag("color");
             {
-                this->_pattern_settings->addValue("red", 128);
-                this->_pattern_settings->addValue("green", 0);
-                this->_pattern_settings->addValue("blue", 128);
+                this->_pattern_settings->addTag("foreground");
+                this->_pattern_settings->pushTag("foreground");
+                {
+                    this->_pattern_settings->addValue("red", 128);
+                    this->_pattern_settings->addValue("green", 0);
+                    this->_pattern_settings->addValue("blue", 128);
+                }
+                this->_pattern_settings->popTag();
+                this->_pattern_settings->addTag("background");
+                this->_pattern_settings->pushTag("background");
+                {
+                    this->_pattern_settings->addValue("red",   0);
+                    this->_pattern_settings->addValue("green", 0);
+                    this->_pattern_settings->addValue("blue",  0);
+                }
+                this->_pattern_settings->popTag();
             }
             this->_pattern_settings->popTag();
         }
