@@ -28,6 +28,7 @@ CalibrationPattern::CalibrationPattern() {
     this->_state = OFF;
 
     this->_trigger = new UdpTrigger(this->_host_address);
+    this->_trigger->connectToHost();
 }
 
 void CalibrationPattern::resizePattern(float window_width, float window_height) {
