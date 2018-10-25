@@ -16,7 +16,9 @@
 enum CalibrationStates {
     OFF,
     TARGET,
-    REFERENCE
+    PAUSE2REFERENCE,
+    REFERENCE,
+    PAUSE2TARGET
 };
 
 class CalibrationPattern {
@@ -33,7 +35,7 @@ private:
     const string _pattern_settings_filename = "calibrationSettings.xml";
     ofxXmlSettings *_pattern_settings;
     int _number_of_targets, _reference_target, _current_target;
-    float _marker_radius, _current_target_start_time, _time_per_target;
+    float _marker_radius, _current_target_start_time, _time_per_target, _pause_start_time, _pause_duration;
     ofColor _marker_color, _marker_background_color;
     vector<ofVec2f> _target_positions;
     vector<ofVec2f> _target_correction;
@@ -46,6 +48,7 @@ private:
     void writeDefaultSettings();
     void nextTarget();
     void backToReference();
+    void pause();
 
     UdpTrigger *_trigger;
     string _host_address;

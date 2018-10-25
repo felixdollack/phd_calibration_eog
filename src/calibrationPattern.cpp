@@ -26,6 +26,7 @@ CalibrationPattern::CalibrationPattern() {
     this->_current_target = -1;
     this->_current_target_start_time = 0;
     this->_state = OFF;
+    this->_pause_start_time = 0;
 
     this->_trigger = new UdpTrigger(this->_host_address);
     this->_trigger->connectToHost();
@@ -58,16 +59,29 @@ void CalibrationPattern::update() {
             this->_state = OFF;
         }
 
-        // stop blinking the curret target and shift to the next
-        if ((ofGetElapsedTimef() - this->_current_target_start_time) > this->_time_per_target) {
-            if (this->_state == REFERENCE) {
-                this->_calibration_targets[this->_reference_target].setBlinkyOn(false);
-                nextTarget();
-                this->_calibration_targets[this->_current_target].setBlinkyOn(true);
-            } else {
-                this->_calibration_targets[this->_current_target].setBlinkyOn(false);
-                backToReference();
-                this->_calibration_targets[this->_reference_target].setBlinkyOn(true);
+        // reset pause time when pause duration is over
+        if ((this->_state == PAUSE2REFERENCE) || (this->_state == PAUSE2TARGET)) {
+            if ((ofGetElapsedTimef() - this->_pause_start_time) > this->_pause_duration) {
+                this->_pause_start_time = 0;
+                if (this->_state == PAUSE2REFERENCE) {
+                    backToReference();
+                    this->_calibration_targets[this->_reference_target].setBlinkyOn(true);
+                } else {
+                    nextTarget();
+                    this->_calibration_targets[this->_current_target].setBlinkyOn(true);
+                }
+            }
+        } else {
+            // stop blinking the curret target and shift to the next
+            if ((ofGetElapsedTimef() - this->_current_target_start_time) > this->_time_per_target) {
+                if ((this->_state == REFERENCE) && (this->_pause_start_time == 0)) {
+                    this->_calibration_targets[this->_reference_target].setBlinkyOn(false);
+                    pause();
+                }
+                if ((this->_state == TARGET) && (this->_pause_start_time == 0)) {
+                    this->_calibration_targets[this->_current_target].setBlinkyOn(false);
+                    pause();
+                }
             }
         }
     } else {
@@ -82,6 +96,15 @@ void CalibrationPattern::update() {
     for (int i=0; i<this->_calibration_targets.size(); i++) {
         this->_calibration_targets[i].update();
     }
+}
+
+void CalibrationPattern::pause() {
+    if (this->_state == TARGET) {
+        this->_state = PAUSE2REFERENCE;
+    } else {
+        this->_state = PAUSE2TARGET;
+    }
+    this->_pause_start_time = ofGetElapsedTimef();
 }
 
 void CalibrationPattern::nextTarget() {
@@ -119,6 +142,7 @@ void CalibrationPattern::loadSettings() {
         this->_pattern_settings->pushTag("target");
         {
             this->_time_per_target = this->_pattern_settings->getValue("duration", 1.0f);
+            this->_pause_duration = this->_pattern_settings->getValue("pause", 0.0f);
             this->_marker_radius = this->_pattern_settings->getValue("radius", 2.0f);
 
             float r,g,b;
@@ -167,6 +191,7 @@ void CalibrationPattern::writeDefaultSettings() {
         this->_pattern_settings->pushTag("target");
         {
             this->_pattern_settings->addValue("duration", 2.0f);
+            this->_pattern_settings->addValue("pause", 0.25f);
             this->_pattern_settings->addValue("radius", 12.0f);
             this->_pattern_settings->addTag("color");
             this->_pattern_settings->pushTag("color");
