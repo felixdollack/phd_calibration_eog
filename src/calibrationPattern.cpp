@@ -55,13 +55,6 @@ void CalibrationPattern::draw() {
 
 void CalibrationPattern::update() {
     if (this->_state != OFF) {
-        // start pattern
-        if (this->_current_target < 0) {
-            this->_current_target_start_time = ofGetElapsedTimef();
-            nextTarget();
-            this->_calibration_targets[this->_current_target].setBlinkyOn(true);
-        }
-
         // stop pattern after last target
         if (this->_current_target >= this->_number_of_targets) {
             this->_current_target = -1;
@@ -130,7 +123,8 @@ void CalibrationPattern::backToReference() {
 }
 
 void CalibrationPattern::startCalibration() {
-    this->_state = TARGET;
+    this->_state = REFERENCE;
+    pause();
     this->_trigger->startRecording();
 }
 
