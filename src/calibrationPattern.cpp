@@ -17,6 +17,11 @@ CalibrationPattern::CalibrationPattern() {
     }
     loadSettings();
 
+    if (this->_reference_target > -1) {
+        this->_use_reference = true;
+    } else {
+        this->_use_reference = false;
+    }
     getPatternPositions(ofGetWindowWidth(), ofGetWindowHeight());
     BeepMode mode;
     if (_use_beep == true) {
@@ -61,7 +66,7 @@ void CalibrationPattern::update() {
         if ((this->_state == PAUSE2REFERENCE) || (this->_state == PAUSE2TARGET)) {
             if ((ofGetElapsedTimef() - this->_pause_start_time) > this->_pause_duration) {
                 this->_pause_start_time = 0;
-                if (this->_state == PAUSE2REFERENCE) {
+                if ((this->_state == PAUSE2REFERENCE) && (this->_use_reference == true)) {
                     backToReference();
                     this->_calibration_target->setBlinkyOn(true);
                 } else {
@@ -93,7 +98,7 @@ void CalibrationPattern::update() {
 }
 
 void CalibrationPattern::pause() {
-    if (this->_state == TARGET) {
+    if ((this->_state == TARGET) && (this->_use_reference == true)) {
         this->_state = PAUSE2REFERENCE;
         if ((this->_use_commands) && (this->_target_command[this->_reference_target] != NULL)) {
             this->_target_command[this->_reference_target]->play();
@@ -179,7 +184,7 @@ void CalibrationPattern::loadSettings() {
         this->_pattern_settings->pushTag("order");
         {
             this->_use_commands = this->_pattern_settings->getValue("verbal_commands", 0);
-            this->_reference_target = this->_pattern_settings->getValue("reference", 0);
+            this->_reference_target = this->_pattern_settings->getValue("reference", -1);
             int positions_in_pattern = this->_pattern_settings->getValue("size", 0);
             string filename;
             for (int i = 0; i < positions_in_pattern; i++) {

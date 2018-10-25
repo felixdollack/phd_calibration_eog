@@ -42,7 +42,7 @@ private:
     vector<int> _target_order;
     vector<ofSoundPlayer*> _target_command;
     Blinky *_calibration_target;
-    bool _use_beep, _use_beeps, _use_commands;
+    bool _use_beep, _use_beeps, _use_commands, _use_reference;
 
     void getPatternPositions(float pattern_width, float pattern_height);
     void updatePatternPositions(int index);
