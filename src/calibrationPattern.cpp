@@ -49,7 +49,7 @@ void CalibrationPattern::update() {
         if (this->_current_target < 0) {
             this->_current_target_start_time = ofGetElapsedTimef();
             nextTarget();
-            this->_calibration_targets[this->_current_target].setBlinking(true);
+            this->_calibration_targets[this->_current_target].setBlinkyOn(true);
         }
 
         // stop pattern after last target
@@ -61,19 +61,19 @@ void CalibrationPattern::update() {
         // stop blinking the curret target and shift to the next
         if ((ofGetElapsedTimef() - this->_current_target_start_time) > this->_time_per_target) {
             if (this->_state == REFERENCE) {
-                this->_calibration_targets[this->_reference_target].setBlinking(false);
+                this->_calibration_targets[this->_reference_target].setBlinkyOn(false);
                 nextTarget();
-                this->_calibration_targets[this->_current_target].setBlinking(true);
+                this->_calibration_targets[this->_current_target].setBlinkyOn(true);
             } else {
-                this->_calibration_targets[this->_current_target].setBlinking(false);
+                this->_calibration_targets[this->_current_target].setBlinkyOn(false);
                 backToReference();
-                this->_calibration_targets[this->_reference_target].setBlinking(true);
+                this->_calibration_targets[this->_reference_target].setBlinkyOn(true);
             }
         }
     } else {
         if (this->_current_target_start_time > 0) {
             for (int i=0; i < this->_calibration_targets.size(); i++) {
-                this->_calibration_targets[i].setBlinking(false);
+                this->_calibration_targets[i].setBlinkyOn(false);
             }
             this->_trigger->stopRecording();
         }
