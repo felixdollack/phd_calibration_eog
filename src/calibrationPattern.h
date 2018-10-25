@@ -41,6 +41,7 @@ private:
     vector<ofVec2f> _target_correction;
     vector<int> _target_order;
     vector<Blinky> _calibration_targets;
+    bool _use_beep, _use_beeps;
 
     void getPatternPositions(float pattern_width, float pattern_height);
     void updatePatternPositions();

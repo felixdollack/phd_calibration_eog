@@ -18,8 +18,17 @@ CalibrationPattern::CalibrationPattern() {
     loadSettings();
 
     getPatternPositions(ofGetWindowWidth(), ofGetWindowHeight());
+    BeepMode mode;
+    if (_use_beep == true) {
+        mode = BeepMode::BEEP_ON_START;
+    } else {
+        mode = BeepMode::BEEP_OFF;
+    }
+    if (_use_beeps == true) {
+        mode = BeepMode::BEEP_ON_END;
+    }
     for (int i=0; i < this->_number_of_targets; i++) {
-        this->_calibration_targets.push_back(*new Blinky(this->_marker_radius, this->_marker_color, this->_marker_background_color));
+        this->_calibration_targets.push_back(*new Blinky(this->_marker_radius, this->_marker_color, this->_marker_background_color, mode, false, 0.0f));
     }
     updatePatternPositions();
 
@@ -144,6 +153,12 @@ void CalibrationPattern::loadSettings() {
             this->_time_per_target = this->_pattern_settings->getValue("duration", 1.0f);
             this->_pause_duration = this->_pattern_settings->getValue("pause", 0.0f);
             this->_marker_radius = this->_pattern_settings->getValue("radius", 2.0f);
+            this->_pattern_settings->pushTag("beep");
+            {
+                this->_use_beep = this->_pattern_settings->getValue("once", 2.0f);
+                this->_use_beeps = this->_pattern_settings->getValue("always", 2.0f);
+            }
+            this->_pattern_settings->popTag();
 
             float r,g,b;
             this->_pattern_settings->pushTag("color");
@@ -193,6 +208,13 @@ void CalibrationPattern::writeDefaultSettings() {
             this->_pattern_settings->addValue("duration", 2.0f);
             this->_pattern_settings->addValue("pause", 0.25f);
             this->_pattern_settings->addValue("radius", 12.0f);
+            this->_pattern_settings->addTag("beep");
+            this->_pattern_settings->pushTag("beep");
+            {
+                this->_use_beep = this->_pattern_settings->addValue("once", true);
+                this->_use_beeps = this->_pattern_settings->addValue("always", false);
+            }
+            this->_pattern_settings->popTag();
             this->_pattern_settings->addTag("color");
             this->_pattern_settings->pushTag("color");
             {
