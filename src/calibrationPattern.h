@@ -41,11 +41,11 @@ private:
     vector<ofVec2f> _target_correction;
     vector<int> _target_order;
     vector<ofSoundPlayer*> _target_command;
-    vector<Blinky> _calibration_targets;
+    Blinky *_calibration_target;
     bool _use_beep, _use_beeps, _use_commands;
 
     void getPatternPositions(float pattern_width, float pattern_height);
-    void updatePatternPositions();
+    void updatePatternPositions(int index);
     void loadSettings();
     void writeDefaultSettings();
     void nextTarget();

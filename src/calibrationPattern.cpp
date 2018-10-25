@@ -27,10 +27,8 @@ CalibrationPattern::CalibrationPattern() {
     if (_use_beeps == true) {
         mode = BeepMode::BEEP_ON_END;
     }
-    for (int i=0; i < this->_number_of_targets; i++) {
-        this->_calibration_targets.push_back(*new Blinky(this->_marker_radius, this->_marker_color, this->_marker_background_color, mode, false, 0.0f));
-    }
-    updatePatternPositions();
+    this->_calibration_target = new Blinky(this->_marker_radius, this->_marker_color, this->_marker_background_color, mode, false, 0.0f);
+    updatePatternPositions(this->_current_target);
 
     this->_current_target = -1;
     this->_current_target_start_time = 0;
@@ -43,14 +41,12 @@ CalibrationPattern::CalibrationPattern() {
 
 void CalibrationPattern::resizePattern(float window_width, float window_height) {
     getPatternPositions(window_width, window_height);
-    updatePatternPositions();
+    updatePatternPositions(this->_current_target);
 }
 
 void CalibrationPattern::draw() {
     ofClear(ofColor::black);
-    for (int i=0; i < this->_number_of_targets; i++) {
-        this->_calibration_targets[i].draw();
-    }
+    this->_calibration_target->draw();
 }
 
 void CalibrationPattern::update() {
@@ -67,37 +63,33 @@ void CalibrationPattern::update() {
                 this->_pause_start_time = 0;
                 if (this->_state == PAUSE2REFERENCE) {
                     backToReference();
-                    this->_calibration_targets[this->_reference_target].setBlinkyOn(true);
+                    this->_calibration_target->setBlinkyOn(true);
                 } else {
                     nextTarget();
-                    this->_calibration_targets[this->_current_target].setBlinkyOn(true);
+                    this->_calibration_target->setBlinkyOn(true);
                 }
             }
         } else {
             // stop blinking the curret target and shift to the next
             if ((ofGetElapsedTimef() - this->_current_target_start_time) > this->_time_per_target) {
                 if ((this->_state == REFERENCE) && (this->_pause_start_time == 0)) {
-                    this->_calibration_targets[this->_reference_target].setBlinkyOn(false);
+                    this->_calibration_target->setBlinkyOn(false);
                     pause();
                 }
                 if ((this->_state == TARGET) && (this->_pause_start_time == 0)) {
-                    this->_calibration_targets[this->_current_target].setBlinkyOn(false);
+                    this->_calibration_target->setBlinkyOn(false);
                     pause();
                 }
             }
         }
     } else {
         if (this->_current_target_start_time > 0) {
-            for (int i=0; i < this->_calibration_targets.size(); i++) {
-                this->_calibration_targets[i].setBlinkyOn(false);
-            }
+            this->_calibration_target->setBlinkyOn(false);
             this->_trigger->stopRecording();
         }
     }
 
-    for (int i=0; i<this->_calibration_targets.size(); i++) {
-        this->_calibration_targets[i].update();
-    }
+    this->_calibration_target->update();
 }
 
 void CalibrationPattern::pause() {
@@ -120,12 +112,14 @@ void CalibrationPattern::pause() {
 void CalibrationPattern::nextTarget() {
     this->_state = TARGET;
     this->_current_target++;
+    updatePatternPositions(this->_current_target);
     this->_current_target_start_time = ofGetElapsedTimef();
     this->_trigger->sendTrigger(ofToString(this->_current_target));
 }
 
 void CalibrationPattern::backToReference() {
     this->_state = REFERENCE;
+    updatePatternPositions(this->_reference_target);
     this->_current_target_start_time = ofGetElapsedTimef();
     this->_trigger->sendTrigger(ofToString(this->_reference_target));
 }
@@ -272,9 +266,9 @@ void CalibrationPattern::writeDefaultSettings() {
     this->_pattern_settings->saveFile(this->_pattern_settings_filename);
 }
 
-void CalibrationPattern::updatePatternPositions() {
-    for (int i=0; i < this->_number_of_targets; i++) {
-        this->_calibration_targets[i].setPosition((this->_target_correction[this->_target_order[i]] * this->_marker_radius) + this->_target_positions[this->_target_order[i]] + this->_marker_radius/2);
+void CalibrationPattern::updatePatternPositions(int index) {
+    if ((index > -1) && (index < this->_number_of_targets)) {
+        this->_calibration_target->setPosition((this->_target_correction[this->_target_order[index]] * this->_marker_radius) + this->_target_positions[this->_target_order[index]] + this->_marker_radius/2);
     }
 }
 
