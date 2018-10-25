@@ -19,8 +19,7 @@ CalibrationPattern::CalibrationPattern() {
 
     getPatternPositions(ofGetWindowWidth(), ofGetWindowHeight());
     for (int i=0; i < this->_number_of_targets; i++) {
-        this->_calibration_targets.push_back(*new Blinky(this->_marker_radius));
-        this->_calibration_targets[i].setColors(this->_marker_color, this->_marker_background_color);
+        this->_calibration_targets.push_back(*new Blinky(this->_marker_radius, this->_marker_color, this->_marker_background_color));
     }
     updatePatternPositions();
 
