@@ -187,9 +187,9 @@ void CalibrationPattern::loadSettings() {
         {
             this->_use_commands = this->_pattern_settings->getValue("verbal_commands", 0);
             this->_reference_target = this->_pattern_settings->getValue("reference", -1);
-            int positions_in_pattern = this->_pattern_settings->getValue("size", 0);
+            this->_number_of_targets = this->_pattern_settings->getValue("size", 0);
             string filename;
-            for (int i = 0; i < positions_in_pattern; i++) {
+            for (int i = 0; i < this->_number_of_targets; i++) {
                 this->_pattern_settings->pushTag("item", i);
                 {
                     this->_target_order.push_back(this->_pattern_settings->getValue("n",  0));
@@ -320,7 +320,4 @@ void CalibrationPattern::getPatternPositions(float pattern_width, float pattern_
     this->_target_correction.push_back(ofVec2f(-1.5f, -0.5f));
     this->_target_correction.push_back(ofVec2f(-1.5f, -1.5f));
     this->_target_correction.push_back(ofVec2f(-0.5f, -1.5f));
-
-    // total number of targets in pattern
-    this->_number_of_targets = this->_target_positions.size();
 }
