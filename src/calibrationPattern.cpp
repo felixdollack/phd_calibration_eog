@@ -58,8 +58,7 @@ void CalibrationPattern::update() {
     if (this->_state != OFF) {
         // stop pattern after last target
         if (this->_current_target >= this->_number_of_targets) {
-            this->_current_target = -1;
-            this->_state = OFF;
+            stopCalibration();
         }
 
         // reset pause time when pause duration is over
