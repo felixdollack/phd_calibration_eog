@@ -17,6 +17,8 @@ CalibrationPattern::CalibrationPattern() {
     }
     loadSettings();
 
+    this->_is_recording = false;
+
     if (this->_reference_target > -1) {
         this->_use_reference = true;
     } else {
@@ -89,7 +91,10 @@ void CalibrationPattern::update() {
     } else {
         if (this->_current_target_start_time > 0) {
             this->_calibration_target->setBlinkyOn(false);
-            this->_trigger->stopRecording();
+            if (this->_is_recording == true) {
+                this->_trigger->stopRecording();
+            }
+            this->_is_recording = false;
         }
     }
 
@@ -131,19 +136,21 @@ void CalibrationPattern::backToReference() {
 }
 
 void CalibrationPattern::startCalibration() {
+    this->_trigger->startRecording();
     this->_state = REFERENCE;
     pause();
-    this->_trigger->startRecording();
+    this->_is_recording = true;
 }
 
 void CalibrationPattern::stopCalibration() {
     this->_state = OFF;
     this->_current_target = -1;
     this->_trigger->stopRecording();
+    this->_is_recording = false;
 }
 
 bool CalibrationPattern::isRunning() {
-    return this->_state != OFF;
+    return this->_is_recording;
 }
 
 void CalibrationPattern::loadSettings() {
