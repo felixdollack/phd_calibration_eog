@@ -109,15 +109,29 @@ void CalibrationPattern::pause() {
     if ((this->_state == TARGET) && (this->_use_reference == true)) {
         this->_state = PAUSE2REFERENCE;
         this->_trigger->sendTrigger(ofToString(this->_current_target));
-        if ((this->_use_commands) && (this->_target_command[this->_reference_target] != NULL)) {
-            this->_target_command[this->_reference_target]->play();
+        if (this->_use_commands) {
+            if (this->_use_remote_sound == true) {
+                string msg = ofToString(this->_reference_target);
+                _udp.Send(msg.c_str(), msg.length());
+            } else {
+                if (this->_target_command[this->_reference_target] != NULL) {
+                    this->_target_command[this->_reference_target]->play();
+                }
+            }
         }
     } else {
         this->_state = PAUSE2TARGET;
         this->_trigger->sendTrigger(ofToString(this->_reference_target));
         if ((this->_current_target+1) < this->_number_of_targets) {
-            if ((this->_use_commands) && (this->_target_command[this->_current_target+1] != NULL)) {
-                this->_target_command[this->_current_target+1]->play();
+            if (this->_use_commands) {
+                if (this->_use_remote_sound == true) {
+                    string msg = ofToString(this->_current_target+1);
+                    _udp.Send(msg.c_str(), msg.length());
+                } else {
+                    if (this->_target_command[this->_current_target+1] != NULL) {
+                        this->_target_command[this->_current_target+1]->play();
+                    }
+                }
             }
         }
     }
