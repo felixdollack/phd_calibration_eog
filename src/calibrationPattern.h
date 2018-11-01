@@ -58,8 +58,8 @@ private:
 
     bool _use_remote_sound;
     ofxUDPManager _udp;
-    string _remote_ip = "192.168.1.1";
-    int _remote_port = 12345;
+    string _remote_ip;
+    int _remote_port;
 };
 
 #endif /* calibrationPattern_h */

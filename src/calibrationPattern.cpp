@@ -166,6 +166,7 @@ void CalibrationPattern::loadSettings() {
             this->_time_per_target = this->_pattern_settings->getValue("duration", 1.0f);
             this->_pause_duration = this->_pattern_settings->getValue("pause", 0.0f);
             this->_marker_radius = this->_pattern_settings->getValue("radius", 2.0f);
+            this->_use_remote_sound = this->_pattern_settings->getValue("remote_sound", 0);
             this->_pattern_settings->pushTag("beep");
             {
                 this->_use_beep = this->_pattern_settings->getValue("once", 2.0f);
@@ -215,6 +216,13 @@ void CalibrationPattern::loadSettings() {
             }
         }
         this->_pattern_settings->popTag();
+
+        this->_pattern_settings->pushTag("remote");
+        {
+            this->_remote_ip = this->_pattern_settings->getValue("ip", "");
+            this->_remote_port = this->_pattern_settings->getValue("port", 0);
+        }
+        this->_pattern_settings->popTag();
     }
     this->_pattern_settings->popTag();
 }
@@ -230,6 +238,7 @@ void CalibrationPattern::writeDefaultSettings() {
             this->_pattern_settings->addValue("duration", 2.0f);
             this->_pattern_settings->addValue("pause", 0.25f);
             this->_pattern_settings->addValue("radius", 12.0f);
+            this->_pattern_settings->addValue("remote_sound", 0);
             this->_pattern_settings->addTag("beep");
             this->_pattern_settings->pushTag("beep");
             {
@@ -276,6 +285,13 @@ void CalibrationPattern::writeDefaultSettings() {
                 }
                 this->_pattern_settings->popTag();
             }
+        }
+        this->_pattern_settings->popTag();
+        this->_pattern_settings->addTag("remote");
+        this->_pattern_settings->pushTag("remote");
+        {
+            this->_pattern_settings->addValue("ip",   "192.168.1.1");
+            this->_pattern_settings->addValue("port", 12345);
         }
         this->_pattern_settings->popTag();
     }
