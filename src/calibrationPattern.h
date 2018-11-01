@@ -12,6 +12,7 @@
 #include "ofx_blinky.h"
 #include "ofxXmlSettings.h"
 #include "ofx_udp_trigger.h"
+#include "ofxNetwork.h"
 
 enum CalibrationStates {
     OFF,
@@ -54,6 +55,11 @@ private:
 
     UdpTrigger *_trigger;
     string _host_address;
+
+    bool _use_remote_sound;
+    ofxUDPManager _udp;
+    string _remote_ip = "192.168.1.1";
+    int _remote_port = 12345;
 };
 
 #endif /* calibrationPattern_h */

@@ -44,6 +44,10 @@ CalibrationPattern::CalibrationPattern() {
 
     this->_trigger = new UdpTrigger(this->_host_address);
     this->_trigger->connectToHost();
+
+    this->_udp.Create();
+    this->_udp.Connect(this->_remote_ip.c_str(), this->_remote_port);
+    this->_udp.SetNonBlocking(true);
 }
 
 void CalibrationPattern::resizePattern(float window_width, float window_height) {
