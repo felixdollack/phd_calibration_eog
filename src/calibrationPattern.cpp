@@ -34,6 +34,10 @@ CalibrationPattern::CalibrationPattern() {
     if (_use_beeps == true) {
         mode = BeepMode::BEEP_ON_END;
     }
+    // swithc beep mode off on this local machine if remote is used
+    if (this->_use_remote_sound == true) {
+        mode = BeepMode::BEEP_OFF;
+    }
     this->_calibration_target = new Blinky(this->_marker_radius, this->_marker_color, this->_marker_background_color, mode, false, 0.0f);
     updatePatternPositions(this->_current_target);
 
@@ -73,9 +77,17 @@ void CalibrationPattern::update() {
                 this->_pause_start_time = 0;
                 if ((this->_state == PAUSE2REFERENCE) && (this->_use_reference == true)) {
                     backToReference();
+                    if (this->_use_remote_sound == true) {
+                        string msg = ofToString(9999);
+                        _udp.Send(msg.c_str(), msg.length());
+                    }
                     this->_calibration_target->setBlinkyOn(true);
                 } else {
                     nextTarget();
+                    if (this->_use_remote_sound == true) {
+                        string msg = ofToString(9999);
+                        _udp.Send(msg.c_str(), msg.length());
+                    }
                     this->_calibration_target->setBlinkyOn(true);
                 }
             }
@@ -83,10 +95,18 @@ void CalibrationPattern::update() {
             // stop blinking the curret target and shift to the next
             if ((ofGetElapsedTimef() - this->_current_target_start_time) > this->_time_per_target) {
                 if ((this->_state == REFERENCE) && (this->_pause_start_time == 0)) {
+                    if ((this->_use_remote_sound == true) && (this->_use_beeps == true)) {
+                        string msg = ofToString(9999);
+                        _udp.Send(msg.c_str(), msg.length());
+                    }
                     this->_calibration_target->setBlinkyOn(false);
                     pause();
                 }
                 if ((this->_state == TARGET) && (this->_pause_start_time == 0)) {
+                    if ((this->_use_remote_sound == true) && (this->_use_beeps == true)) {
+                        string msg = ofToString(9999);
+                        _udp.Send(msg.c_str(), msg.length());
+                    }
                     this->_calibration_target->setBlinkyOn(false);
                     pause();
                 }
@@ -95,6 +115,10 @@ void CalibrationPattern::update() {
     } else {
         if (this->_current_target_start_time > 0) {
             this->_calibration_target->setBlinkyOn(false);
+            if ((this->_use_remote_sound == true) && (this->_use_beeps == true)) {
+                string msg = ofToString(9999);
+                _udp.Send(msg.c_str(), msg.length());
+            }
             if (this->_is_recording == true) {
                 this->_trigger->stopRecording();
             }
