@@ -20,11 +20,22 @@ void ofApp::keyPressed(int key){
     if (key == 32) { // spacebar
         if (pattern->isRunning() == false) {
             ofHideCursor();
+            pattern->recordEyeTracker();
             pattern->startCalibration();
         } else {
             pattern->stopCalibration();
+            pattern->stopRecordingEyeTracker();
             ofShowCursor();
         }
+    }
+
+    if (key == 's') { // setup
+        pattern->setupEyeTracker();
+    }
+    if (key == 'c') { // calibrate
+        pattern->calibrateEyeTracker();
+    }
+    if (key == 'q') { // end
     }
 }
 

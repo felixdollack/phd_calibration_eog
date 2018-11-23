@@ -200,6 +200,7 @@ void CalibrationPattern::update() {
             }
             if (this->_is_recording == true) {
                 this->_trigger->stopRecording();
+                stopRecordingEyeTracker();
             }
             this->_is_recording = false;
         }
@@ -212,6 +213,7 @@ void CalibrationPattern::pause() {
     if ((this->_state == TARGET) && (this->_use_reference == true)) {
         this->_state = PAUSE2REFERENCE;
         this->_trigger->sendTrigger(ofToString(this->_current_target));
+        sendEyeTrackerEvent(ofToString(this->_current_target));
         if (this->_use_commands) {
             if (this->_use_remote_sound == true) {
                 string msg = ofToString(this->_reference_target);
@@ -225,6 +227,7 @@ void CalibrationPattern::pause() {
     } else {
         this->_state = PAUSE2TARGET;
         this->_trigger->sendTrigger(ofToString(this->_reference_target));
+        sendEyeTrackerEvent(ofToString(this->_reference_target));
         if ((this->_current_target+1) < this->_number_of_targets) {
             if (this->_use_commands) {
                 if (this->_use_remote_sound == true) {
@@ -247,6 +250,7 @@ void CalibrationPattern::nextTarget() {
     updatePatternPositions(this->_current_target);
     this->_current_target_start_time = ofGetElapsedTimef();
     this->_trigger->sendTrigger(ofToString(this->_current_target));
+    sendEyeTrackerEvent(ofToString(this->_current_target));
 }
 
 void CalibrationPattern::backToReference() {
@@ -254,6 +258,7 @@ void CalibrationPattern::backToReference() {
     updatePatternPositions(this->_reference_target);
     this->_current_target_start_time = ofGetElapsedTimef();
     this->_trigger->sendTrigger(ofToString(this->_reference_target));
+    sendEyeTrackerEvent(ofToString(this->_reference_target));
 }
 
 void CalibrationPattern::startCalibration() {
