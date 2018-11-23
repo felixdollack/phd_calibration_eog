@@ -58,6 +58,81 @@ CalibrationPattern::CalibrationPattern() {
     //this->_osc->setup("192.168.33.62", 8000);
 }
 
+void CalibrationPattern::setupEyeTracker() {
+    ofxOscMessage msg = ofxOscMessage();
+    // connect
+    msg.setAddress("/connect");
+    msg.addStringArg("?");
+    msg.addIntArg(1);
+    _osc->sendMessage(msg);
+
+    // set project
+    msg.setAddress("/set");
+    msg.addStringArg("project");
+    msg.addStringArg("livestream");
+    _osc->sendMessage(msg);
+
+    // set participant
+    msg.setAddress("/set");
+    msg.addStringArg("participant");
+    msg.addStringArg("felix");
+    _osc->sendMessage(msg);
+
+    // start streaming / wake up cameras
+    msg.setAddress("/stream");
+    msg.addStringArg("?");
+    msg.addIntArg(1);
+    _osc->sendMessage(msg);
+}
+
+void CalibrationPattern::stopRecordingEyeTracker() {
+    ofxOscMessage msg = ofxOscMessage();
+    // stop recording
+    msg.setAddress("/record");
+    msg.addStringArg("?");
+    msg.addIntArg(0);
+    _osc->sendMessage(msg);
+}
+
+void CalibrationPattern::cleanupEyeTracker() {
+    ofxOscMessage msg = ofxOscMessage();
+    // stop streaming
+    msg.setAddress("/stream");
+    msg.addStringArg("?");
+    msg.addIntArg(0);
+    _osc->sendMessage(msg);
+
+    // disconnect
+    msg.setAddress("/connect");
+    msg.addStringArg("?");
+    msg.addIntArg(0);
+    _osc->sendMessage(msg);
+}
+
+void CalibrationPattern::calibrateEyeTracker() {
+    ofxOscMessage msg = ofxOscMessage();
+    msg.setAddress("/set");
+    msg.addStringArg("calibration");
+    msg.addStringArg("?");
+    _osc->sendMessage(msg);
+}
+
+void CalibrationPattern::recordEyeTracker() {
+    ofxOscMessage msg = ofxOscMessage();
+    msg.setAddress("/record");
+    msg.addStringArg("?");
+    msg.addIntArg(1);
+    _osc->sendMessage(msg);
+}
+
+void CalibrationPattern::sendEyeTrackerEvent(string message){
+    ofxOscMessage msg = ofxOscMessage();
+    msg.setAddress("/set");
+    msg.addStringArg("trigger");
+    msg.addStringArg(message);
+    _osc->sendMessage(msg);
+}
+
 void CalibrationPattern::resizePattern(float window_width, float window_height) {
     getPatternPositions(window_width, window_height);
     updatePatternPositions(this->_current_target);

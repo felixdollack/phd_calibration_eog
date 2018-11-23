@@ -32,6 +32,14 @@ public:
     bool isRunning();
     void startCalibration();
     void stopCalibration();
+
+    void setupEyeTracker();
+    void cleanupEyeTracker();
+    void calibrateEyeTracker();
+    void recordEyeTracker();
+    void stopRecordingEyeTracker();
+    void sendEyeTrackerEvent(string message);
+
 private:
     CalibrationStates _state;
     const string _pattern_settings_filename = "calibrationSettings.xml";
