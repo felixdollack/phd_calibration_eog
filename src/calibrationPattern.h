@@ -13,6 +13,7 @@
 #include "ofxXmlSettings.h"
 #include "ofx_udp_trigger.h"
 #include "ofxNetwork.h"
+#include "ofxOsc.h"
 
 enum CalibrationStates {
     OFF,
@@ -60,6 +61,8 @@ private:
     ofxUDPManager _udp;
     string _remote_ip;
     int _remote_port;
+
+    ofxOscSender *_osc;
 };
 
 #endif /* calibrationPattern_h */

@@ -52,6 +52,10 @@ CalibrationPattern::CalibrationPattern() {
     this->_udp.Create();
     this->_udp.Connect(this->_remote_ip.c_str(), this->_remote_port);
     this->_udp.SetNonBlocking(true);
+
+    this->_osc = new ofxOscSender();
+    this->_osc->setup("0.0.0.0", 8000);
+    //this->_osc->setup("192.168.33.62", 8000);
 }
 
 void CalibrationPattern::resizePattern(float window_width, float window_height) {
