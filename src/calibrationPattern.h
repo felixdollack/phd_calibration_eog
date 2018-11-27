@@ -33,7 +33,10 @@ public:
     void startCalibration();
     void stopCalibration();
 
-    void setupEyeTracker();
+    void setupProjectEyeTracker();
+    void setupSubjectEyeTracker();
+    void connectEyeTracker();
+    void streamEyeTracker();
     void cleanupEyeTracker();
     void calibrateEyeTracker();
     void recordEyeTracker();
@@ -71,6 +74,7 @@ private:
     int _remote_port;
 
     ofxOscSender *_osc;
+    string _osc_ip, _codeword;
 };
 
 #endif /* calibrationPattern_h */

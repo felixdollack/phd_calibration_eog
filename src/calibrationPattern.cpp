@@ -54,30 +54,38 @@ CalibrationPattern::CalibrationPattern() {
     this->_udp.SetNonBlocking(true);
 
     this->_osc = new ofxOscSender();
-    this->_osc->setup("0.0.0.0", 8000);
-    //this->_osc->setup("192.168.33.62", 8000);
+    this->_osc->setup(this->_osc_ip, 8000);
 }
 
-void CalibrationPattern::setupEyeTracker() {
+void CalibrationPattern::setupProjectEyeTracker() {
+    ofxOscMessage msg = ofxOscMessage();
+    // set project
+    msg.setAddress("/set");
+    msg.addStringArg("project");
+    msg.addStringArg("eog_calibration");
+    _osc->sendMessage(msg);
+}
+
+void CalibrationPattern::setupSubjectEyeTracker() {
+    ofxOscMessage msg = ofxOscMessage();
+    // set participant
+    msg.setAddress("/set");
+    msg.addStringArg("participant");
+    msg.addStringArg(this->_codeword);
+    _osc->sendMessage(msg);
+}
+
+void CalibrationPattern::connectEyeTracker() {
     ofxOscMessage msg = ofxOscMessage();
     // connect
     msg.setAddress("/connect");
     msg.addStringArg("?");
     msg.addIntArg(1);
     _osc->sendMessage(msg);
+}
 
-    // set project
-    msg.setAddress("/set");
-    msg.addStringArg("project");
-    msg.addStringArg("livestream");
-    _osc->sendMessage(msg);
-
-    // set participant
-    msg.setAddress("/set");
-    msg.addStringArg("participant");
-    msg.addStringArg("felix");
-    _osc->sendMessage(msg);
-
+void CalibrationPattern::streamEyeTracker() {
+    ofxOscMessage msg = ofxOscMessage();
     // start streaming / wake up cameras
     msg.setAddress("/stream");
     msg.addStringArg("?");
@@ -282,6 +290,8 @@ bool CalibrationPattern::isRunning() {
 void CalibrationPattern::loadSettings() {
     this->_pattern_settings->pushTag("calibration");
     {
+        this->_codeword = this->_pattern_settings->getValue("name", "");
+        this->_osc_ip = this->_pattern_settings->getValue("osc_ip", "192.168.1.1");
         this->_host_address = this->_pattern_settings->getValue("host", "192.168.1.1");
         this->_pattern_settings->pushTag("target");
         {
@@ -353,6 +363,9 @@ void CalibrationPattern::writeDefaultSettings() {
     this->_pattern_settings->addTag("calibration");
     this->_pattern_settings->pushTag("calibration");
     {
+        this->_pattern_settings->addValue("name", "xx00xx00");
+        this->_pattern_settings->addValue("osc_ip", "0.0.0.0");
+
         this->_pattern_settings->addValue("host", "192.168.1.1");
         this->_pattern_settings->addTag("target");
         this->_pattern_settings->pushTag("target");

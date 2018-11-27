@@ -29,13 +29,23 @@ void ofApp::keyPressed(int key){
         }
     }
 
-    if (key == 's') { // setup
-        pattern->setupEyeTracker();
+    if (key == '1') {
+        pattern->connectEyeTracker();
+    }
+    if (key == '2') { //
+        pattern->setupProjectEyeTracker();
+    }
+    if (key == '3') { //
+        pattern->setupSubjectEyeTracker();
+    }
+    if (key == '4') {
+        pattern->streamEyeTracker();
     }
     if (key == 'c') { // calibrate
         pattern->calibrateEyeTracker();
     }
     if (key == 'q') { // end
+        pattern->stopRecordingEyeTracker();
     }
 }
 
