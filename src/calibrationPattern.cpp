@@ -300,7 +300,6 @@ void CalibrationPattern::loadSettings() {
     {
         this->_codeword = this->_settings->getValue("name", "");
         this->_pattern_settings_filename = this->_codeword + ".xml";
-        cout << this->_pattern_settings_filename << endl;
         this->_osc_ip = this->_settings->getValue("osc_ip", "192.168.1.1");
         this->_host_address = this->_settings->getValue("host", "192.168.1.1");
         this->_settings->pushTag("target");
