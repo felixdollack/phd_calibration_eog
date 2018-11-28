@@ -194,7 +194,7 @@ void CalibrationPattern::update() {
                         string msg = ofToString(9999);
                         _udp.Send(msg.c_str(), msg.length());
                     }
-                    this->_calibration_target->setBlinkyOn(false);
+                    //this->_calibration_target->setBlinkyOn(false);
                     pause();
                 }
                 if ((this->_state == TARGET) && (this->_pause_start_time == 0)) {
@@ -202,7 +202,7 @@ void CalibrationPattern::update() {
                         string msg = ofToString(9999);
                         _udp.Send(msg.c_str(), msg.length());
                     }
-                    this->_calibration_target->setBlinkyOn(false);
+                    //this->_calibration_target->setBlinkyOn(false);
                     pause();
                 }
             }
