@@ -363,7 +363,7 @@ void CalibrationPattern::writeDefaultSettings() {
             this->_settings->addTag("beep");
             this->_settings->pushTag("beep");
             {
-                this->_use_beep = this->_settings->addValue("once", true);
+                this->_use_beep = this->_settings->addValue("once", false);
                 this->_use_beeps = this->_settings->addValue("always", false);
             }
             this->_settings->popTag();
@@ -432,7 +432,7 @@ void CalibrationPattern::writeDefaultPatternSettings() {
     this->_pattern_settings->addTag("order");
     this->_pattern_settings->pushTag("order");
     {
-        this->_pattern_settings->addValue("verbal_commands", 0);
+        this->_pattern_settings->addValue("verbal_commands", 1);
         this->_pattern_settings->addValue("reference", 0);
         this->_pattern_settings->addValue("size", 13);
         for (int i = 0; i < 13; i++) {
