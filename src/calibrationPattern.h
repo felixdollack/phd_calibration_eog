@@ -45,8 +45,9 @@ public:
 
 private:
     CalibrationStates _state;
-    const string _pattern_settings_filename = "calibrationSettings.xml";
-    ofxXmlSettings *_pattern_settings;
+    const string _settings_filename = "calibrationSettings.xml";
+    string _pattern_settings_filename;
+    ofxXmlSettings *_pattern_settings, *_settings;
     int _number_of_targets, _reference_target, _current_target;
     float _marker_radius, _current_target_start_time, _time_per_target, _pause_start_time, _pause_duration;
     ofColor _marker_color, _marker_background_color;
@@ -61,6 +62,8 @@ private:
     void updatePatternPositions(int index);
     void loadSettings();
     void writeDefaultSettings();
+    void loadPatternSettings();
+    void writeDefaultPatternSettings();
     void nextTarget();
     void backToReference();
     void pause();

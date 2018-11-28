@@ -9,13 +9,21 @@
 
 CalibrationPattern::CalibrationPattern() {
     // write default settings (if necessary) and load settings
-    this->_pattern_settings = new ofxXmlSettings();
-    bool success = this->_pattern_settings->loadFile(this->_pattern_settings_filename);
+    this->_settings = new ofxXmlSettings();
+    bool success = this->_settings->loadFile(this->_settings_filename);
     if (success == false) {
         writeDefaultSettings();
-        this->_pattern_settings->loadFile(this->_pattern_settings_filename);
+        this->_settings->loadFile(this->_settings_filename);
     }
     loadSettings();
+
+    this->_pattern_settings = new ofxXmlSettings();
+    success = this->_pattern_settings->loadFile(this->_pattern_settings_filename);
+    if (success == false) {
+        writeDefaultPatternSettings();
+        this->_pattern_settings->loadFile(this->_pattern_settings_filename);
+    }
+    loadPatternSettings();
 
     this->_is_recording = false;
 
@@ -288,147 +296,154 @@ bool CalibrationPattern::isRunning() {
 }
 
 void CalibrationPattern::loadSettings() {
-    this->_pattern_settings->pushTag("calibration");
+    this->_settings->pushTag("calibration");
     {
-        this->_codeword = this->_pattern_settings->getValue("name", "");
-        this->_osc_ip = this->_pattern_settings->getValue("osc_ip", "192.168.1.1");
-        this->_host_address = this->_pattern_settings->getValue("host", "192.168.1.1");
-        this->_pattern_settings->pushTag("target");
+        this->_codeword = this->_settings->getValue("name", "");
+        this->_pattern_settings_filename = this->_codeword + ".xml";
+        cout << this->_pattern_settings_filename << endl;
+        this->_osc_ip = this->_settings->getValue("osc_ip", "192.168.1.1");
+        this->_host_address = this->_settings->getValue("host", "192.168.1.1");
+        this->_settings->pushTag("target");
         {
-            this->_time_per_target = this->_pattern_settings->getValue("duration", 1.0f);
-            this->_pause_duration = this->_pattern_settings->getValue("pause", 0.0f);
-            this->_marker_radius = this->_pattern_settings->getValue("radius", 2.0f);
-            this->_use_remote_sound = this->_pattern_settings->getValue("remote_sound", 0);
-            this->_pattern_settings->pushTag("beep");
+            this->_time_per_target = this->_settings->getValue("duration", 1.0f);
+            this->_pause_duration = this->_settings->getValue("pause", 0.0f);
+            this->_marker_radius = this->_settings->getValue("radius", 2.0f);
+            this->_use_remote_sound = this->_settings->getValue("remote_sound", 0);
+            this->_settings->pushTag("beep");
             {
-                this->_use_beep = this->_pattern_settings->getValue("once", 2.0f);
-                this->_use_beeps = this->_pattern_settings->getValue("always", 2.0f);
+                this->_use_beep = this->_settings->getValue("once", 2.0f);
+                this->_use_beeps = this->_settings->getValue("always", 2.0f);
             }
-            this->_pattern_settings->popTag();
+            this->_settings->popTag();
 
             float r,g,b;
-            this->_pattern_settings->pushTag("color");
+            this->_settings->pushTag("color");
             {
-                this->_pattern_settings->pushTag("foreground");
-                r = this->_pattern_settings->getValue("red",   0);
-                g = this->_pattern_settings->getValue("green", 0);
-                b = this->_pattern_settings->getValue("blue",  0);
+                this->_settings->pushTag("foreground");
+                r = this->_settings->getValue("red",   0);
+                g = this->_settings->getValue("green", 0);
+                b = this->_settings->getValue("blue",  0);
                 this->_marker_color = ofColor(r, g, b);
-                this->_pattern_settings->popTag();
-                this->_pattern_settings->pushTag("background");
-                r = this->_pattern_settings->getValue("red",   0);
-                g = this->_pattern_settings->getValue("green", 0);
-                b = this->_pattern_settings->getValue("blue",  0);
+                this->_settings->popTag();
+                this->_settings->pushTag("background");
+                r = this->_settings->getValue("red",   0);
+                g = this->_settings->getValue("green", 0);
+                b = this->_settings->getValue("blue",  0);
                 this->_marker_background_color = ofColor(r, g, b);
-                this->_pattern_settings->popTag();
+                this->_settings->popTag();
+            }
+            this->_settings->popTag();
+        }
+        this->_settings->popTag();
+        this->_settings->pushTag("remote");
+        {
+            this->_remote_ip = this->_settings->getValue("ip", "");
+            this->_remote_port = this->_settings->getValue("port", 0);
+        }
+        this->_settings->popTag();
+    }
+    this->_settings->popTag();
+}
+
+void CalibrationPattern::writeDefaultSettings() {
+    this->_settings->addTag("calibration");
+    this->_settings->pushTag("calibration");
+    {
+        this->_settings->addValue("name", "xx00xx00");
+        this->_settings->addValue("osc_ip", "0.0.0.0");
+
+        this->_settings->addValue("host", "192.168.1.1");
+        this->_settings->addTag("target");
+        this->_settings->pushTag("target");
+        {
+            this->_settings->addValue("duration", 2.0f);
+            this->_settings->addValue("pause", 0.25f);
+            this->_settings->addValue("radius", 12.0f);
+            this->_settings->addValue("remote_sound", 0);
+            this->_settings->addTag("beep");
+            this->_settings->pushTag("beep");
+            {
+                this->_use_beep = this->_settings->addValue("once", true);
+                this->_use_beeps = this->_settings->addValue("always", false);
+            }
+            this->_settings->popTag();
+            this->_settings->addTag("color");
+            this->_settings->pushTag("color");
+            {
+                this->_settings->addTag("foreground");
+                this->_settings->pushTag("foreground");
+                {
+                    this->_settings->addValue("red", 128);
+                    this->_settings->addValue("green", 0);
+                    this->_settings->addValue("blue", 128);
+                }
+                this->_settings->popTag();
+                this->_settings->addTag("background");
+                this->_settings->pushTag("background");
+                {
+                    this->_settings->addValue("red",   0);
+                    this->_settings->addValue("green", 0);
+                    this->_settings->addValue("blue",  0);
+                }
+                this->_settings->popTag();
+            }
+            this->_settings->popTag();
+        }
+        this->_settings->popTag();
+
+        this->_settings->addTag("remote");
+        this->_settings->pushTag("remote");
+        {
+            this->_settings->addValue("ip",   "192.168.1.1");
+            this->_settings->addValue("port", 12345);
+        }
+        this->_settings->popTag();
+    }
+    this->_settings->popTag();
+    this->_settings->saveFile(this->_settings_filename);
+}
+
+void CalibrationPattern::loadPatternSettings() {
+    this->_pattern_settings->pushTag("order");
+    {
+        this->_use_commands = this->_pattern_settings->getValue("verbal_commands", 0);
+        this->_reference_target = this->_pattern_settings->getValue("reference", -1);
+        this->_number_of_targets = this->_pattern_settings->getValue("size", 0);
+        string filename;
+        for (int i = 0; i < this->_number_of_targets; i++) {
+            this->_pattern_settings->pushTag("item", i);
+            {
+                this->_target_order.push_back(this->_pattern_settings->getValue("n",  0));
+                filename = this->_pattern_settings->getValue("command",  "");
+                ofSoundPlayer *command = NULL;
+                if (filename != "") {
+                    command = new ofSoundPlayer();
+                    command->load(filename);
+                }
+                this->_target_command.push_back(command);
             }
             this->_pattern_settings->popTag();
         }
-        this->_pattern_settings->popTag();
-
-        this->_pattern_settings->pushTag("order");
-        {
-            this->_use_commands = this->_pattern_settings->getValue("verbal_commands", 0);
-            this->_reference_target = this->_pattern_settings->getValue("reference", -1);
-            this->_number_of_targets = this->_pattern_settings->getValue("size", 0);
-            string filename;
-            for (int i = 0; i < this->_number_of_targets; i++) {
-                this->_pattern_settings->pushTag("item", i);
-                {
-                    this->_target_order.push_back(this->_pattern_settings->getValue("n",  0));
-                    filename = this->_pattern_settings->getValue("command",  "");
-                    ofSoundPlayer *command = NULL;
-                    if (filename != "") {
-                        command = new ofSoundPlayer();
-                        command->load(filename);
-                    }
-                    this->_target_command.push_back(command);
-                }
-                this->_pattern_settings->popTag();
-            }
-        }
-        this->_pattern_settings->popTag();
-
-        this->_pattern_settings->pushTag("remote");
-        {
-            this->_remote_ip = this->_pattern_settings->getValue("ip", "");
-            this->_remote_port = this->_pattern_settings->getValue("port", 0);
-        }
-        this->_pattern_settings->popTag();
     }
     this->_pattern_settings->popTag();
 }
 
-void CalibrationPattern::writeDefaultSettings() {
-    this->_pattern_settings->addTag("calibration");
-    this->_pattern_settings->pushTag("calibration");
+void CalibrationPattern::writeDefaultPatternSettings() {
+    this->_pattern_settings->addTag("order");
+    this->_pattern_settings->pushTag("order");
     {
-        this->_pattern_settings->addValue("name", "xx00xx00");
-        this->_pattern_settings->addValue("osc_ip", "0.0.0.0");
-
-        this->_pattern_settings->addValue("host", "192.168.1.1");
-        this->_pattern_settings->addTag("target");
-        this->_pattern_settings->pushTag("target");
-        {
-            this->_pattern_settings->addValue("duration", 2.0f);
-            this->_pattern_settings->addValue("pause", 0.25f);
-            this->_pattern_settings->addValue("radius", 12.0f);
-            this->_pattern_settings->addValue("remote_sound", 0);
-            this->_pattern_settings->addTag("beep");
-            this->_pattern_settings->pushTag("beep");
+        this->_pattern_settings->addValue("verbal_commands", 0);
+        this->_pattern_settings->addValue("reference", 0);
+        this->_pattern_settings->addValue("size", 13);
+        for (int i = 0; i < 13; i++) {
+            this->_pattern_settings->addTag("item");
+            this->_pattern_settings->pushTag("item", i);
             {
-                this->_use_beep = this->_pattern_settings->addValue("once", true);
-                this->_use_beeps = this->_pattern_settings->addValue("always", false);
-            }
-            this->_pattern_settings->popTag();
-            this->_pattern_settings->addTag("color");
-            this->_pattern_settings->pushTag("color");
-            {
-                this->_pattern_settings->addTag("foreground");
-                this->_pattern_settings->pushTag("foreground");
-                {
-                    this->_pattern_settings->addValue("red", 128);
-                    this->_pattern_settings->addValue("green", 0);
-                    this->_pattern_settings->addValue("blue", 128);
-                }
-                this->_pattern_settings->popTag();
-                this->_pattern_settings->addTag("background");
-                this->_pattern_settings->pushTag("background");
-                {
-                    this->_pattern_settings->addValue("red",   0);
-                    this->_pattern_settings->addValue("green", 0);
-                    this->_pattern_settings->addValue("blue",  0);
-                }
-                this->_pattern_settings->popTag();
+                this->_pattern_settings->addValue("n",  i);
+                this->_pattern_settings->addValue("command",  "");
             }
             this->_pattern_settings->popTag();
         }
-        this->_pattern_settings->popTag();
-
-        this->_pattern_settings->addTag("order");
-        this->_pattern_settings->pushTag("order");
-        {
-            this->_pattern_settings->addValue("verbal_commands", 0);
-            this->_pattern_settings->addValue("reference", 0);
-            this->_pattern_settings->addValue("size", 13);
-            for (int i = 0; i < 13; i++) {
-                this->_pattern_settings->addTag("item");
-                this->_pattern_settings->pushTag("item", i);
-                {
-                    this->_pattern_settings->addValue("n",  i);
-                    this->_pattern_settings->addValue("command",  "");
-                }
-                this->_pattern_settings->popTag();
-            }
-        }
-        this->_pattern_settings->popTag();
-        this->_pattern_settings->addTag("remote");
-        this->_pattern_settings->pushTag("remote");
-        {
-            this->_pattern_settings->addValue("ip",   "192.168.1.1");
-            this->_pattern_settings->addValue("port", 12345);
-        }
-        this->_pattern_settings->popTag();
     }
     this->_pattern_settings->popTag();
     this->_pattern_settings->saveFile(this->_pattern_settings_filename);
